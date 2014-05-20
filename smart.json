@@ -1,0 +1,9 @@
+{
+  "name": "mj-famous",
+  "description": "Simple meteor wrapper for commonjs version of famous from https://github.com/aelr/famous-commonjs",
+  "homepage": "https://github.com/mj-networks/famous-commonjs.git",
+  "author": "Jens Zastrow <jens.zastrow@mj-networks-gmbh.de> (https://github.com/mj-networks/mj-famous/)",
+  "version": "0.2.0-8",
+  "git": "https://github.com/mj-networks/mj-famous.git",
+  "packages": {}
+}
