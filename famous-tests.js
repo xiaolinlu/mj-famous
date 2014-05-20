@@ -1,4 +1,4 @@
-Tinytest.add('mj famous - core', function(test) {
+Tinytest.add('mj famous - core', function (test) {
   test.instanceOf(famous.core.Context, Function);
   test.instanceOf(famous.core.ElementAllocator, Function);
   test.instanceOf(famous.core.Engine, Object);
@@ -17,13 +17,13 @@ Tinytest.add('mj famous - core', function(test) {
   test.instanceOf(famous.core.ViewSequence, Function);
 });
 
-Tinytest.add('mj famous - events', function(test) {
+Tinytest.add('mj famous - events', function (test) {
   test.instanceOf(famous.events.EventArbiter, Function);
   test.instanceOf(famous.events.EventFilter, Function);
   test.instanceOf(famous.events.EventMapper, Function);
 });
 
-Tinytest.add('mj famous - inputs', function(test) {
+Tinytest.add('mj famous - inputs', function (test) {
   test.instanceOf(famous.inputs.Accumulator, Function);
   test.instanceOf(famous.inputs.GenericSync, Function);
   test.instanceOf(famous.inputs.MouseSync, Function);
@@ -36,7 +36,7 @@ Tinytest.add('mj famous - inputs', function(test) {
   test.instanceOf(famous.inputs.TwoFingerSync, Function);
 });
 
-Tinytest.add('mj famous - math', function(test) {
+Tinytest.add('mj famous - math', function (test) {
   test.instanceOf(famous.math.Matrix, Function);
   test.instanceOf(famous.math.Quaternion, Function);
   test.instanceOf(famous.math.Random, Object);
@@ -44,21 +44,21 @@ Tinytest.add('mj famous - math', function(test) {
   test.instanceOf(famous.math.Vector, Function);
 });
 
-Tinytest.add('mj famous - modifiers', function(test) {
+Tinytest.add('mj famous - modifiers', function (test) {
   test.instanceOf(famous.modifiers.Draggable, Function);
   test.instanceOf(famous.modifiers.Fader, Function);
   test.instanceOf(famous.modifiers.ModifierChain, Function);
   test.instanceOf(famous.modifiers.StateModifier, Function);
 });
 
-Tinytest.add('mj famous - physics', function(test) {
+Tinytest.add('mj famous - physics', function (test) {
   test.instanceOf(famous.physics.PhysicsEngine, Function);
-  
+
   test.instanceOf(famous.physics.bodies.Body, Function);
   test.instanceOf(famous.physics.bodies.Circle, Function);
   test.instanceOf(famous.physics.bodies.Particle, Function);
   test.instanceOf(famous.physics.bodies.Rectangle, Function);
-  
+
   test.instanceOf(famous.physics.constraints.Collision, Function);
   test.instanceOf(famous.physics.constraints.Constraint, Function);
   test.instanceOf(famous.physics.constraints.Curve, Function);
@@ -67,7 +67,7 @@ Tinytest.add('mj famous - physics', function(test) {
   test.instanceOf(famous.physics.constraints.Surface, Function);
   test.instanceOf(famous.physics.constraints.Wall, Function);
   test.instanceOf(famous.physics.constraints.Walls, Function);
-  
+
   test.instanceOf(famous.physics.forces.Drag, Function);
   test.instanceOf(famous.physics.forces.Force, Function);
   test.instanceOf(famous.physics.forces.Repulsion, Function);
@@ -75,4 +75,19 @@ Tinytest.add('mj famous - physics', function(test) {
   test.instanceOf(famous.physics.forces.RotationalSpring, Function);
   test.instanceOf(famous.physics.forces.Spring, Function);
   test.instanceOf(famous.physics.forces.VectorField, Function);
+});
+
+Tinytest.addAsync('mj famous - can render surface', function (test, complete) {
+  var context = famous.core.Engine.createContext();
+
+  var surface = new famous.core.Surface({
+    size: [100, 60],
+    content: '<h1>Hello Famo.us</h1>'
+  });
+  context.add(surface);
+
+  Meteor.setTimeout(function () {
+    test.equal(surface._currTarget.innerHTML, '<h1>Hello Famo.us</h1>');
+    complete();
+  }, 100);
 });

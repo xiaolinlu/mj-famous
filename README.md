@@ -132,7 +132,17 @@ All classes are available in namespace `famous`.
          TabBar: require('./widgets/TabBar'),
          ToggleButton: require('./widgets/ToggleButton')
        }
-       }
+    }
+    
+Usage:
+    
+    var context = famous.core.Engine.createContext();
+    
+    var surface = new famous.core.Surface({
+        size: [100, 60],
+        content: '<h1>Hello Famo.us</h1>'
+    });
+    context.add(surface);
 
 For more Details see: 
 
