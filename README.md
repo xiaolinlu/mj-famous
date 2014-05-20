@@ -1,7 +1,7 @@
 mj-famous
 =========
 
-Meteor package for common-js version of famo.us. 
+Meteor package for common-js version of famo.us from https://github.com/aelr/famous-commonjs.git. 
 All classes are available in namespace `famous`.
 
     famous = {
