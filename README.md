@@ -2,6 +2,7 @@ mj-famous
 =========
 
 Meteor package for common-js version of famo.us from https://github.com/aelr/famous-commonjs.git. 
+The current version is `Famous 0.20.0`.
 All classes are available in namespace `famous`.
 
     famous = {
@@ -133,6 +134,8 @@ All classes are available in namespace `famous`.
          ToggleButton: require('./widgets/ToggleButton')
        }
     }
+
+Additionally the Famo.us polyfills from https://github.com/Famous/polyfills are included.
     
 Usage:
     
