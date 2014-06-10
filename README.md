@@ -2,7 +2,7 @@ mj-famous
 =========
 
 Meteor package for common-js version of famo.us from https://github.com/aelr/famous-commonjs.git. 
-The current version is `Famous 0.20.0`.
+The current version is `Famous 0.2.1.
 All classes are available in namespace `famous`.
 
     famous = {

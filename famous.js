@@ -2659,7 +2659,7 @@ Surface.prototype.getClassList = function getClassList() {
  *    causes a re-rendering if the content has changed.
  *
  * @method setContent
- * @param {string} content HTML content
+ * @param {string|Document Fragment} content HTML content
  */
 Surface.prototype.setContent = function setContent(content) {
     if (this.content !== content) {
@@ -3066,9 +3066,9 @@ Transform.identity = [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
  *
  * @method multiply4x4
  * @static
- * @param {Transform} a left matrix
- * @param {Transform} b right matrix
- * @return {Transform} the resulting matrix
+ * @param {Transform} a left Transform
+ * @param {Transform} b right Transform
+ * @return {Transform}
  */
 Transform.multiply4x4 = function multiply4x4(a, b) {
     return [
@@ -3097,9 +3097,9 @@ Transform.multiply4x4 = function multiply4x4(a, b) {
  *
  * @method multiply
  * @static
- * @param {Transform} a left matrix
- * @param {Transform} b right matrix
- * @return {Transform} the resulting matrix
+ * @param {Transform} a left Transform
+ * @param {Transform} b right Transform
+ * @return {Transform}
  */
 Transform.multiply = function multiply(a, b) {
     return [
@@ -3126,13 +3126,13 @@ Transform.multiply = function multiply(a, b) {
  * Return a Transform translated by additional amounts in each
  *    dimension. This is equivalent to the result of
  *
- *    Matrix.multiply(Matrix.translate(t[0], t[1], t[2]), m).
+ *    Transform.multiply(Matrix.translate(t[0], t[1], t[2]), m).
  *
  * @method thenMove
  * @static
- * @param {Transform} m a matrix
+ * @param {Transform} m a Transform
  * @param {Array.Number} t floats delta vector of length 2 or 3
- * @return {Transform} the resulting translated matrix
+ * @return {Transform}
  */
 Transform.thenMove = function thenMove(m, t) {
     if (!t[2]) t[2] = 0;
@@ -3169,7 +3169,7 @@ Transform.moveThen = function moveThen(v, m) {
  * @param {Number} x x translation
  * @param {Number} y y translation
  * @param {Number} z z translation
- * @return {Transform} the resulting matrix
+ * @return {Transform}
  */
 Transform.translate = function translate(x, y, z) {
     if (z === undefined) z = 0;
@@ -3187,7 +3187,7 @@ Transform.translate = function translate(x, y, z) {
  * @param {Transform} m a matrix
  * @param {Array.Number} s delta vector (array of floats &&
  *    array.length == 3)
- * @return {Transform} the resulting translated matrix
+ * @return {Transform}
  */
 Transform.thenScale = function thenScale(m, s) {
     return [
@@ -3207,7 +3207,7 @@ Transform.thenScale = function thenScale(m, s) {
  * @param {Number} x x scale factor
  * @param {Number} y y scale factor
  * @param {Number} z z scale factor
- * @return {Transform} the resulting matrix
+ * @return {Transform}
  */
 Transform.scale = function scale(x, y, z) {
     if (z === undefined) z = 1;
@@ -3221,7 +3221,7 @@ Transform.scale = function scale(x, y, z) {
  * @method rotateX
  * @static
  * @param {Number} theta radians
- * @return {Transform} the resulting matrix
+ * @return {Transform}
  */
 Transform.rotateX = function rotateX(theta) {
     var cosTheta = Math.cos(theta);
@@ -3236,7 +3236,7 @@ Transform.rotateX = function rotateX(theta) {
  * @method rotateY
  * @static
  * @param {Number} theta radians
- * @return {Transform} the resulting matrix
+ * @return {Transform}
  */
 Transform.rotateY = function rotateY(theta) {
     var cosTheta = Math.cos(theta);
@@ -3251,7 +3251,7 @@ Transform.rotateY = function rotateY(theta) {
  * @method rotateZ
  * @static
  * @param {Number} theta radians
- * @return {Transform} the resulting matrix
+ * @return {Transform}
  */
 Transform.rotateZ = function rotateZ(theta) {
     var cosTheta = Math.cos(theta);
@@ -3269,7 +3269,7 @@ Transform.rotateZ = function rotateZ(theta) {
  * @param {Number} phi radians to rotate about the positive x axis
  * @param {Number} theta radians to rotate about the positive y axis
  * @param {Number} psi radians to rotate about the positive z axis
- * @return {Transform} the resulting matrix
+ * @return {Transform}
  */
 Transform.rotate = function rotate(phi, theta, psi) {
     var cosPhi = Math.cos(phi);
@@ -3303,7 +3303,7 @@ Transform.rotate = function rotate(phi, theta, psi) {
  * @static
  * @param {Array.Number} v unit vector representing the axis to rotate about
  * @param {Number} theta radians to rotate clockwise about the axis
- * @return {Transform} the resulting matrix
+ * @return {Transform}
  */
 Transform.rotateAxis = function rotateAxis(v, theta) {
     var sinTheta = Math.sin(theta);
@@ -3337,7 +3337,7 @@ Transform.rotateAxis = function rotateAxis(v, theta) {
  * @static
  * @param {Array.Number} v origin point to apply matrix
  * @param {Transform} m matrix to apply
- * @return {Transform} the resulting matrix
+ * @return {Transform}
  */
 Transform.aboutOrigin = function aboutOrigin(v, m) {
     var t0 = v[0] - (v[0] * m[0] + v[1] * m[4] + v[2] * m[8]);
@@ -3354,10 +3354,34 @@ Transform.aboutOrigin = function aboutOrigin(v, m) {
  * @param {Number} phi scale factor skew in the x axis
  * @param {Number} theta scale factor skew in the y axis
  * @param {Number} psi scale factor skew in the z axis
- * @return {Transform} the resulting matrix
+ * @return {Transform}
  */
 Transform.skew = function skew(phi, theta, psi) {
     return [1, 0, 0, 0, Math.tan(psi), 1, 0, 0, Math.tan(theta), Math.tan(phi), 1, 0, 0, 0, 0, 1];
+};
+
+/**
+ * Return a Transform representation of a skew in the x-direction
+ *
+ * @method skewX
+ * @static
+ * @param {Number} angle the angle between the top and left sides
+ * @return {Transform}
+ */
+Transform.skewX = function skewX(angle) {
+    return [1, 0, 0, 0, Math.tan(angle), 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
+};
+
+/**
+ * Return a Transform representation of a skew in the y-direction
+ *
+ * @method skewY
+ * @static
+ * @param {Number} angle the angle between the top and right sides
+ * @return {Transform}
+ */
+Transform.skewY = function skewY(angle) {
+    return [1, Math.tan(angle), 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1];
 };
 
 /**
@@ -3366,7 +3390,7 @@ Transform.skew = function skew(phi, theta, psi) {
  * @method perspective
  * @static
  * @param {Number} focusZ z position of focal point
- * @return {Transform} the resulting matrix
+ * @return {Transform}
  */
 Transform.perspective = function perspective(focusZ) {
     return [1, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, -1 / focusZ, 0, 0, 0, 1];
@@ -3377,7 +3401,7 @@ Transform.perspective = function perspective(focusZ) {
  *
  * @method getTranslate
  * @static
- * @param {Transform} m matrix
+ * @param {Transform} m Transform
  * @return {Array.Number} the translation vector [t_x, t_y, t_z]
  */
 Transform.getTranslate = function getTranslate(m) {
@@ -3385,14 +3409,14 @@ Transform.getTranslate = function getTranslate(m) {
 };
 
 /**
- * Return inverse affine matrix for given Transform.
+ * Return inverse affine transform for given Transform.
  *   Note: This assumes m[3] = m[7] = m[11] = 0, and m[15] = 1.
  *   Will provide incorrect results if not invertible or preconditions not met.
  *
  * @method inverse
  * @static
- * @param {Transform} m matrix
- * @return {Transform} the resulting inverted matrix
+ * @param {Transform} m Transform
+ * @return {Transform}
  */
 Transform.inverse = function inverse(m) {
     // only need to consider 3x3 section for affine
@@ -3447,7 +3471,7 @@ function _sign(n) {
  *
  * @method interpret
  * @static
- * @param {Transform} M tranform matrix
+ * @param {Transform} M transform matrix
  * @return {Object} matrix spec object with component matrices .translate,
  *    .rotate, .scale, .skew
  */
@@ -3551,7 +3575,7 @@ Transform.interpret = function interpret(M) {
  * @param {Transform} M1 f(M1,M2,0) = M1
  * @param {Transform} M2 f(M1,M2,1) = M2
  * @param {Number} t
- * @return {Transform} resulting matrix
+ * @return {Transform}
  */
 Transform.average = function average(M1, M2, t) {
     t = (t === undefined) ? 0.5 : t;
@@ -3582,7 +3606,7 @@ Transform.average = function average(M1, M2, t) {
  * @static
  * @param {matrixSpec} spec object with component matrices .translate,
  *    .rotate, .scale, .skew
- * @return {Transform} composed martix
+ * @return {Transform} composed transform
  */
 Transform.build = function build(spec) {
     var scaleMatrix = Transform.scale(spec.scale[0], spec.scale[1], spec.scale[2]);
@@ -3617,7 +3641,6 @@ Transform.equals = function equals(a, b) {
  */
 Transform.notEquals = function notEquals(a, b) {
     if (a === b) return false;
-    if (!(a && b)) return true;
 
     // shortci
     return !(a && b) ||
@@ -4585,15 +4608,17 @@ function MouseSync(options) {
         delta    : null,
         position : null,
         velocity : null,
-        clientX  : undefined,
-        clientY  : undefined,
-        offsetX  : undefined,
-        offsetY  : undefined
+        clientX  : 0,
+        clientY  : 0,
+        offsetX  : 0,
+        offsetY  : 0
     };
 
     this._position = null;      // to be deprecated
     this._prevCoord = undefined;
     this._prevTime = undefined;
+    this._down = false;
+    this._moved = false;
 }
 
 MouseSync.DEFAULT_OPTIONS = {
@@ -4610,31 +4635,34 @@ var MINIMUM_TICK_TIME = 8;
 
 var _now = Date.now;
 
-function _clearPayload() {
-    var payload = this._payload;
-    payload.delta    = null;
-    payload.position = null;
-    payload.velocity = null;
-    payload.clientX  = undefined;
-    payload.clientY  = undefined;
-    payload.offsetX  = undefined;
-    payload.offsetY  = undefined;
-}
-
 function _handleStart(event) {
+    var delta;
+    var velocity;
     event.preventDefault(); // prevent drag
-    _clearPayload.call(this);
 
     var x = event.clientX;
     var y = event.clientY;
 
     this._prevCoord = [x, y];
     this._prevTime = _now();
+    this._down = true;
+    this._move = false;
 
-    this._position = (this.options.direction !== undefined) ? 0 : [0, 0];
+    if (this.options.direction !== undefined){
+        this._position = 0;
+        delta = 0;
+        velocity = 0;
+    }
+    else {
+        this._position = [0, 0];
+        delta = [0, 0];
+        velocity = [0, 0];
+    }
 
     var payload = this._payload;
+    payload.delta = delta;
     payload.position = this._position;
+    payload.velocity = velocity;
     payload.clientX = x;
     payload.clientY = y;
     payload.offsetX = event.offsetX;
@@ -4701,17 +4729,21 @@ function _handleMove(event) {
 
     this._prevCoord = [x, y];
     this._prevTime = currTime;
+    this._move = true;
 }
 
 function _handleEnd(event) {
-    if (!this._prevCoord) return;
+    if (!this._down) return;
+
     this._eventOutput.emit('end', this._payload);
     this._prevCoord = undefined;
     this._prevTime = undefined;
+    this._down = false;
+    this._move = false;
 }
 
 function _handleLeave(event) {
-    if (!this._prevCoord) return;
+    if (!this._down || !this._move) return;
 
     var boundMove = _handleMove.bind(this);
     var boundEnd = function(event) {
@@ -5007,7 +5039,8 @@ ScaleSync.prototype._startUpdate = function _startUpdate(event) {
     this._eventOutput.emit('start', {
         count: event.touches.length,
         touches: [this.touchAId, this.touchBId],
-        distance: this._startDist
+        distance: this._startDist,
+        center: TwoFingerSync.calculateCenter(this.posA, this.posB)
     });
 };
 
@@ -5016,6 +5049,8 @@ ScaleSync.prototype._moveUpdate = function _moveUpdate(diffTime) {
     var scale = this.options.scale;
 
     var currDist = TwoFingerSync.calculateDistance(this.posA, this.posB);
+    var center = TwoFingerSync.calculateCenter(this.posA, this.posB);
+
     var delta = (currDist - this._startDist) / this._startDist;
     var newScaleFactor = Math.max(1 + scale * delta, 0);
     var veloScale = (newScaleFactor - this._scaleFactor) / diffTime;
@@ -5025,6 +5060,7 @@ ScaleSync.prototype._moveUpdate = function _moveUpdate(diffTime) {
         scale: newScaleFactor,
         velocity: veloScale,
         distance: currDist,
+        center : center,
         touches: [this.touchAId, this.touchBId]
     });
 
@@ -5324,23 +5360,27 @@ TouchSync.DIRECTION_Y = 1;
 
 var MINIMUM_TICK_TIME = 8;
 
-function _clearPayload() {
-    var payload = this._payload;
-    payload.position = null;
-    payload.velocity = null;
-    payload.clientX  = undefined;
-    payload.clientY  = undefined;
-    payload.count    = undefined;
-    payload.touch    = undefined;
-}
-
 // handle 'trackstart'
 function _handleStart(data) {
-    _clearPayload.call(this);
-
-    this._position = (this.options.direction !== undefined) ? 0 : [0, 0];
+    var velocity;
+    var delta;
+    if (this.options.direction !== undefined){
+        this._position = 0;
+        velocity = 0;
+        delta = 0;
+    }
+    else {
+        this._position = [0, 0];
+        velocity = [0, 0];
+        delta = [0, 0];
+    }
 
     var payload = this._payload;
+    payload.delta = delta;
+    payload.position = this._position;
+    payload.velocity = velocity;
+    payload.clientX = data.x;
+    payload.clientY = data.y;
     payload.count = data.count;
     payload.touch = data.identifier;
 
@@ -5405,42 +5445,8 @@ function _handleMove(data) {
 
 // handle 'trackend'
 function _handleEnd(data) {
-    var nextVel = (this.options.direction !== undefined) ? 0 : [0, 0];
-    var history = data.history;
-    var count = data.count;
-    if (history.length > 1) {
-        var currHistory = history[history.length - 1];
-        var prevHistory = history[history.length - 2];
-
-        var prevTime = prevHistory.timestamp;
-        var currTime = currHistory.timestamp;
-
-        var diffX = currHistory.x - prevHistory.x;
-        var diffY = currHistory.y - prevHistory.y;
-
-        if (this.options.rails) {
-            if (Math.abs(diffX) > Math.abs(diffY)) diffY = 0;
-            else diffX = 0;
-        }
-
-        var diffTime = Math.max(currTime - prevTime, MINIMUM_TICK_TIME);
-        var velX = diffX / diffTime;
-        var velY = diffY / diffTime;
-        var scale = this.options.scale;
-
-        if (this.options.direction === TouchSync.DIRECTION_X) nextVel = scale * velX;
-        else if (this.options.direction === TouchSync.DIRECTION_Y) nextVel = scale * velY;
-        else nextVel = [scale * velX, scale * velY];
-    }
-
-    var payload = this._payload;
-    payload.velocity = nextVel;
-    payload.clientX  = data.x;
-    payload.clientY  = data.y;
-    payload.count    = count;
-    payload.touch    = data.identifier;
-
-    this._eventOutput.emit('end', payload);
+    this._payload.count = data.count;
+    this._eventOutput.emit('end', this._payload);
 }
 
 /**
@@ -6987,7 +6993,12 @@ Draggable.prototype.setOptions = function setOptions(options) {
             if (proj.indexOf(val) !== -1) currentOptions.projection |= _direction[val];
         });
     }
-    if (options.scale  !== undefined) currentOptions.scale  = options.scale;
+    if (options.scale  !== undefined) {
+        currentOptions.scale  = options.scale;
+        this.sync.setOptions({
+            scale: options.scale
+        });
+    }
     if (options.xRange !== undefined) currentOptions.xRange = options.xRange;
     if (options.yRange !== undefined) currentOptions.yRange = options.yRange;
     if (options.snapX  !== undefined) currentOptions.snapX  = options.snapX;
@@ -7593,8 +7604,8 @@ function PhysicsEngine(options) {
 }
 
 var TIMESTEP = 17;
-var MIN_TIME_STEP = 17;
-var MAX_TIME_STEP = 1000 / 120;
+var MIN_TIME_STEP = 1000 / 120;
+var MAX_TIME_STEP = 17;
 
 /**
  * @property PhysicsEngine.DEFAULT_OPTIONS
@@ -11638,7 +11649,11 @@ function InputSurface(options) {
     this._name        = options.name || '';
 
     Surface.apply(this, arguments);
+
     this.on('click', this.focus.bind(this));
+    window.addEventListener('click', function(event) {
+        if (event.target !== this._currTarget) this.blur();
+    }.bind(this));
 }
 InputSurface.prototype = Object.create(Surface.prototype);
 InputSurface.prototype.constructor = InputSurface;
@@ -13209,6 +13224,7 @@ Transitionable.prototype.set = function set(endState, transition, callback) {
 Transitionable.prototype.reset = function reset(startState, startVelocity) {
     this._currentMethod = null;
     this._engineInstance = null;
+    this._callback = undefined;
     this.state = startState;
     this.velocity = startVelocity;
     this.currentAction = null;
@@ -13226,11 +13242,12 @@ Transitionable.prototype.reset = function reset(startState, startVelocity) {
  *    completion (t=1)
  */
 Transitionable.prototype.delay = function delay(duration, callback) {
-    this.set(this._engineInstance.get(), {duration: duration,
+    this.set(this.get(), {duration: duration,
         curve: function() {
             return 0;
         }},
-        callback);
+        callback
+    );
 };
 
 /**
@@ -13342,7 +13359,7 @@ TransitionableTransform.prototype.setTranslate = function setTranslate(translate
 /**
  * An optimized way of setting only the scale component of a Transform
  *
- * @method setTranslate
+ * @method setScale
  * @chainable
  *
  * @param scale {Array}         New scale state
@@ -13362,7 +13379,7 @@ TransitionableTransform.prototype.setScale = function setScale(scale, transition
 /**
  * An optimized way of setting only the rotational component of a Transform
  *
- * @method setTranslate
+ * @method setRotate
  * @chainable
  *
  * @param eulerAngles {Array}   Euler angles for new rotation state
@@ -13385,7 +13402,7 @@ TransitionableTransform.prototype.setRotate = function setRotate(eulerAngles, tr
 /**
  * An optimized way of setting only the skew component of a Transform
  *
- * @method setTranslate
+ * @method setSkew
  * @chainable
  *
  * @param skewAngles {Array}    New skew state
@@ -13408,7 +13425,7 @@ TransitionableTransform.prototype.setSkew = function setSkew(skewAngles, transit
  * Setter for a TransitionableTransform with optional parameters to transition
  * between Transforms
  *
- * @method setTranslate
+ * @method set
  * @chainable
  *
  * @param transform {Array}     New transform state
@@ -14504,9 +14521,8 @@ function debounce(func, wait) {
             }
         };
 
-        if (!timeout) {
-            timeout = setTimeout(fn, wait);
-        }
+        clear(timeout);
+        timeout = setTimeout(fn, wait);
 
         return result;
     };
@@ -14640,7 +14656,7 @@ var OptionsManager = require('../core/OptionsManager');
  * @param {Options} [options] An object of configurable options.
  */
 function ContextualView(options) {
-    this.options = Object.create(ContextualView.DEFAULT_OPTIONS);
+    this.options = Object.create(this.constructor.DEFAULT_OPTIONS || ContextualView.DEFAULT_OPTIONS);
     this._optionsManager = new OptionsManager(this.options);
     if (options) this.setOptions(options);
 
@@ -14994,6 +15010,7 @@ function FlexibleLayout(options) {
     this._cachedTotalLength = false;
     this._cachedLengths = [];
     this._cachedTransforms = null;
+    this._ratiosDirty = false;
 
     this._eventOutput = new EventHandler();
     EventHandler.setOutputHandler(this, this._eventOutput);
@@ -15099,6 +15116,7 @@ FlexibleLayout.prototype.setRatios = function setRatios(ratios, transition, call
     if (currRatios.get().length === 0) transition = undefined;
     if (currRatios.isActive()) currRatios.halt();
     currRatios.set(ratios, transition, callback);
+    this._ratiosDirty = true;
 };
 
 /**
@@ -15120,11 +15138,12 @@ FlexibleLayout.prototype.commit = function commit(context) {
     var length = parentSize[direction];
     var size;
 
-    if (length !== this._cachedTotalLength || this._ratios.isActive() || direction !== this._cachedDirection) {
+    if (length !== this._cachedTotalLength || this._ratiosDirty || this._ratios.isActive() || direction !== this._cachedDirection) {
         _reflow.call(this, ratios, length, direction);
 
         if (length !== this._cachedTotalLength) this._cachedTotalLength = length;
         if (direction !== this._cachedDirection) this._cachedDirection = direction;
+        if (this._ratiosDirty) this._ratiosDirty = false;
     }
 
     var result = [];
@@ -15500,10 +15519,12 @@ GridLayout.prototype.commit = function commit(context) {
             this._states.splice(currIndex, 1);
         }
         if (item) {
-            result[currIndex] = modifier.modify({
-                origin: origin,
-                target: item.render()
-            });
+            result.push(
+                modifier.modify({
+                    origin: origin,
+                    target: item.render()
+                })
+            );
         }
         sequence = sequence.getNext();
         currIndex++;
@@ -16462,6 +16483,7 @@ Scroller.prototype.commit = function commit(context) {
 
     return {
         transform: Transform.multiply(transform, scrollTransform),
+        size: size,
         opacity: opacity,
         origin: origin,
         target: this.group.render()
@@ -16910,7 +16932,7 @@ Scrollview.prototype.getVelocity = function getVelocity() {
  * Sets the Scrollview instance's velocity. Until affected by input or another call of setVelocity
  *  the Scrollview instance will scroll at the passed-in velocity.
  * @method setVelocity
- * @param {number} v TThe magnitude of the velocity.
+ * @param {number} v The magnitude of the velocity.
  */
 Scrollview.prototype.setVelocity = function setVelocity(v) {
     this._particle.setVelocity1D(v);
@@ -16931,6 +16953,12 @@ Scrollview.prototype.setOptions = function setOptions(options) {
         this._scroller.setOptions(options);
         this._optionsManager.setOptions(options);
     }
+
+    this._scroller.setOptions(this.options);
+    if (this.options.groupScroll)
+        this._scroller.pipe(this._eventInput);
+    else
+        this._scroller.unpipe(this._eventInput);
 
     this.drag.setOptions({strength: this.options.drag});
     this.friction.setOptions({strength: this.options.friction});
@@ -17071,11 +17099,18 @@ function SequentialLayout(options) {
     this.options = Object.create(this.constructor.DEFAULT_OPTIONS);
     this.optionsManager = new OptionsManager(this.options);
 
+    this._itemsCache = [];
+    this._outputCache = {
+        size: null,
+        target: this._itemsCache
+    };
+
     if (options) this.setOptions(options);
 }
 
 SequentialLayout.DEFAULT_OPTIONS = {
     direction: Utility.Direction.Y,
+    itemSpacing: 0,
     defaultItemSize: [50, 50]
 };
 
@@ -17152,32 +17187,34 @@ SequentialLayout.prototype.render = function render() {
     var girthDim = (this.options.direction === Utility.Direction.X) ? 1 : 0;
 
     var currentNode = this._items;
-    var result = [];
+    var result = this._itemsCache;
+    var i = 0;
     while (currentNode) {
         var item = currentNode.get();
+        if (!item) break;
 
         var itemSize;
         if (item && item.getSize) itemSize = item.getSize();
         if (!itemSize) itemSize = this.options.defaultItemSize;
         if (itemSize[girthDim] !== true) girth = Math.max(girth, itemSize[girthDim]);
 
-        var output = this._outputFunction.call(this, item, length, result.length);
-        result.push(output);
+        var output = this._outputFunction.call(this, item, length, i);
+        result[i] = output;
 
-        if (itemSize[lengthDim] && (itemSize[lengthDim] !== true)) length += itemSize[lengthDim];
+        if (itemSize[lengthDim] && (itemSize[lengthDim] !== true)) length += itemSize[lengthDim] + this.options.itemSpacing;
         currentNode = currentNode.getNext();
+        i++;
     }
+    this._itemsCache.splice(i);
 
     if (!girth) girth = undefined;
 
     if (!this._size) this._size = [0, 0];
-    this._size[lengthDim] = length;
+    this._size[lengthDim] = length - this.options.itemSpacing; // account for last itemSpacing
     this._size[girthDim] = girth;
 
-    return {
-        size: this.getSize(),
-        target: result
-    };
+    this._outputCache.size = this.getSize();
+    return this._outputCache;
 };
 
 module.exports = SequentialLayout;
